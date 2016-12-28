@@ -20,15 +20,18 @@
     </com.amap.api.maps.MapView>
     <EditText
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:id="@+id/search_edit"
-        android:layout_gravity="right|top"/>
+        android:layout_gravity="right|top"
+        android:background="@drawable/shape"
+        android:paddingLeft="8dp"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Search"
         android:id="@+id/search_bt"
-        android:layout_gravity="left|top"/>
+        android:layout_gravity="left|top"
+        android:background="@drawable/shape"/>
 
 
 
