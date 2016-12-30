@@ -32,6 +32,12 @@
         android:id="@+id/search_bt"
         android:layout_gravity="left|top"
         android:background="@drawable/shape"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="settings"
+        android:id="@+id/settings"
+        android:layout_gravity="bottom|left"/>
 
 
 

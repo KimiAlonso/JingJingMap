@@ -2,6 +2,41 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zbd.jingjingmap">
     <!--用于进行网络定位-->
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="049782bd3550369dbf5560467d4e0b09">
+        </meta-data>
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".SettingsActivity">
+
+        </activity>
+        <activity android:name=".LocationManagerActivity">
+
+        </activity>
+
+        <activity android:name=".ChooseLocationActivity">
+
+        </activity>
+
+        <service android:name="com.amap.api.location.APSService">
+
+        </service>
+    </application>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!--用于访问GPS定位-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -34,28 +69,5 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!--允许程序访问CellID或WiFi热点来获取粗略的位置-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
-        <meta-data android:name="com.amap.api.v2.apikey" android:value="049782bd3550369dbf5560467d4e0b09">
-        </meta-data>
-
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <service android:name="com.amap.api.location.APSService">
-
-        </service>
-    </application>
 
 </manifest>

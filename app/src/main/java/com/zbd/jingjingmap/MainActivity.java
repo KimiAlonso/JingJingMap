@@ -1,5 +1,6 @@
 package com.zbd.jingjingmap;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
@@ -42,32 +43,37 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
 
     Button button;
     EditText edittext;
+    Button settings;
+
+    int cameraState = 0;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_main);
-
-
-
-
-
         mMapView = (MapView) findViewById(R.id.map);
         //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图
         mMapView.onCreate(savedInstanceState);
         aMap = mMapView.getMap();
-        aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+
 
         button = (Button)findViewById(R.id.search_bt);
         edittext = (EditText) findViewById(R.id.search_edit);
+        settings = (Button) findViewById(R.id.settings);
         aMap.showIndoorMap(true);
 //        initMarker();
         aMap.setTrafficEnabled(true);
         mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
         mUiSettings.setScaleControlsEnabled(true);
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
 
@@ -94,6 +100,12 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
                                 if (amapLocation != null
                                         && amapLocation.getErrorCode() == 0) {
                                     mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
+                                    if (cameraState==0){
+                                        aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                                        cameraState = 1;
+                                    }
+
+
 
                                 } else {
                                     String errText = "定位失败," + amapLocation.getErrorCode()+ ": " + amapLocation.getErrorInfo();
@@ -103,6 +115,7 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
 
                         }
                     });
+
                     //设置为高精度定位模式
                     mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
                     //设置定位参数
@@ -111,7 +124,8 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
                     // 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用stopLocation()方法来取消定位请求
                     // 在定位结束后，在合适的生命周期调用onDestroy()方法
                     // 在单次定位情况下，定位无论成功与否，都无需调用stopLocation()方法移除请求，定位sdk内部会移除
-                    mlocationClient.startLocation();//启动定位
+                    mlocationClient.startLocation();
+                    //启动定位
                 }
 
             }
