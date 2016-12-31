@@ -43,4 +43,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('libs/AMap_Location_V3.2.0_20161206.jar')
     compile files('libs/AMap3DMap/Android_Map3D_SDK_V4.1.3_20161208.jar')
+    compile files('libs/ormlite-android-5.0.jar')
 }

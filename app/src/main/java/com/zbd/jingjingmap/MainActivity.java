@@ -29,6 +29,7 @@ import com.amap.api.services.geocoder.GeocodeQuery;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.zbd.jingjingmap.Database.DatabaseHelper;
 
 
 public class MainActivity extends AppCompatActivity   implements GeocodeSearch.OnGeocodeSearchListener{
@@ -41,11 +42,15 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
     AMapLocationClientOption mLocationOption;
     UiSettings mUiSettings;//定义一个UiSettings对象
 
+
+
     Button button;
     EditText edittext;
     Button settings;
 
     int cameraState = 0;
+
+
 
 
     @Override
@@ -171,7 +176,9 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
 
     }
 
-    public void initMarker(double a,double b){
+
+
+    public void initMarker(double a, double b){
         LatLng latLng = new LatLng(a,b);
         final Marker marker = aMap.addMarker(new MarkerOptions().position(latLng).title("Home").snippet("DefaultMarker"));
     }
