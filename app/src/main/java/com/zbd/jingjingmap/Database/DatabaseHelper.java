@@ -17,7 +17,7 @@ import java.util.Map;
  */
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
-    private static final String TABLE_NAME = "sqlite-test.db";
+    private static final String TABLE_NAME = "jingjingmap.db";
     private Map<String, Dao> daos = new HashMap<String, Dao>();
 
 

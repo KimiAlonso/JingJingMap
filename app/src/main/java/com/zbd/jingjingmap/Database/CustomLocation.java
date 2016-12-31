@@ -14,6 +14,14 @@ public class CustomLocation {
     private String name;
     @DatabaseField(columnName = "detail")
     private String detail;
+    @DatabaseField(columnName = "state")
+    private int state;
+    @DatabaseField(columnName = "latitude")
+
+    private double latitude;
+    @DatabaseField(columnName = "longitude")
+
+    private double longitude;
 
     public int getId() {
         return id;
@@ -32,13 +40,36 @@ public class CustomLocation {
         this.name = name;
     }
 
-    public String getPassword() {
+    public String getDetail() {
         return detail;
     }
 
-    public void setPassword(String password) {
+    public void setDetail(String password) {
         this.detail = password;
     }
 
 
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 }

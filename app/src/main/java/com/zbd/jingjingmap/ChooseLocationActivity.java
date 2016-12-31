@@ -129,6 +129,10 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
                 try {
                     List<CustomLocation> mList = helper.getDao(customLocation.getClass()).queryBuilder().where().eq("name",mName).query();
                     customLocation.setName(mName);
+                    customLocation.setDetail(mDetail);
+                    customLocation.setState(1);
+                    customLocation.setLatitude(markerLatitude);
+                    customLocation.setLongitude(markerLongitude);
 
                     if(mList.size() == 0){
                         helper.getDao(customLocation.getClass()).create(customLocation);
@@ -141,7 +145,8 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
                     e.printStackTrace();
                 }
 
-                Toast.makeText(context,String.valueOf(markerLatitude),Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,String.valueOf(markerLatitude)+String.valueOf(markerLongitude),Toast.LENGTH_SHORT).show();
+                helper.close();
             }
         });
 
