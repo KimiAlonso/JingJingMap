@@ -48,7 +48,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
     EditText detailEdit;
     Button locate;
     Button saveLocation;
-    Context context;
+    Context context = ChooseLocationActivity.this;
 
     String mName;
     String mDetail;
@@ -63,6 +63,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
 
     double markerLatitude;
     double markerLongitude;
+    DatabaseHelper helper = new DatabaseHelper(context);
 
 
 
@@ -71,7 +72,8 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chooselocation);
 
-        context = ChooseLocationActivity.this;
+
+
 
         nameEdit = (EditText) findViewById(R.id.name_deit);
         detailEdit = (EditText) findViewById(R.id.detail_deit);
@@ -92,9 +94,14 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
         mMapView.onCreate(savedInstanceState);
         aMap = mMapView.getMap();
         aMap.setTrafficEnabled(true);
-        aMap.setTrafficEnabled(true);
         mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
         mUiSettings.setScaleControlsEnabled(true);
+
+        GeocodeSearch search = new GeocodeSearch(ChooseLocationActivity.this);
+        search.setOnGeocodeSearchListener(ChooseLocationActivity.this);
+        GeocodeQuery quera = new GeocodeQuery(detail,"郑州");
+        search.getFromLocationNameAsyn(quera);
+
 
 
         locate.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +123,10 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
             public boolean onMarkerClick(Marker marker) {
                 markerLatitude = marker.getPosition().latitude;
                 markerLongitude = marker.getPosition().longitude;
+
+
+
+                aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                 saveLocation.setEnabled(true);
                 return true;
             }
@@ -147,12 +158,18 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
 
                 Toast.makeText(context,String.valueOf(markerLatitude)+String.valueOf(markerLongitude),Toast.LENGTH_SHORT).show();
                 helper.close();
+                closeActivity();
             }
         });
 
 
 
 
+    }
+
+
+    public void closeActivity(){
+        ChooseLocationActivity.this.finish();
     }
     @Override
     protected void onDestroy() {
@@ -196,6 +213,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
             double a = pos.getLatitude();
             double b = pos.getLongitude();
             initMarker(a,b);
+
         }
 
 
@@ -208,4 +226,9 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
         LatLng latLng = new LatLng(a,b);
         final Marker marker = aMap.addMarker(new MarkerOptions().position(latLng).title("Home").snippet("DefaultMarker"));
     }
+
+    public DatabaseHelper getHelper(){
+        return helper;
+    }
+
 }

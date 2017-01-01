@@ -38,6 +38,14 @@
         android:text="settings"
         android:id="@+id/settings"
         android:layout_gravity="bottom|left"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="go to"
+        android:id="@+id/go_to"
+        android:visibility="invisible"
+        android:layout_gravity="bottom|center"
+        />
 
 
 

@@ -5,28 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.TextView;
+
+import com.amap.api.services.route.BusPath;
 
 import java.util.List;
 
-/**
- * Created by Amarok on 2016/12/30.
- */
 
-public class LocationsListAdapter extends BaseAdapter {
+public class BusPathListAdapter extends BaseAdapter {
 
-    List mList;
+    List <BusPath> pathList;
     Context mContext;
 
-    public  LocationsListAdapter(List list, Context context){
-        mList = list;
+    public BusPathListAdapter(List <BusPath> list,Context context){
+        pathList = list;
         mContext = context;
     }
 
+
     @Override
     public int getCount() {
-        return mList.size();
+        return pathList.size();
     }
 
     @Override
@@ -42,23 +41,19 @@ public class LocationsListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MViewHolder mViewHolder = new MViewHolder();
-        convertView = LayoutInflater.from(mContext).inflate(R.layout.item_locationmanager,null);
-        mViewHolder.locationName = (TextView) convertView.findViewById(R.id.location_name);
-        mViewHolder.locationDetail = (TextView) convertView.findViewById(R.id.location_detail);
+        convertView = LayoutInflater.from(mContext).inflate(R.layout.item_buspathlist,null);
+        mViewHolder.busPathInfo = (TextView) convertView.findViewById(R.id.buspathname);
 
-        mViewHolder.locationName.setText("s");
-        mViewHolder.locationDetail.setText("a");
-
-
+        String name = String.valueOf(pathList.get(position).getBusDistance());
+        mViewHolder.busPathInfo.setText(name);
 
 
 
 
         return convertView;
     }
-
     public class MViewHolder{
-        TextView locationName;
-        TextView locationDetail;
+        TextView busPathInfo;
+
     }
 }

@@ -29,13 +29,16 @@ import com.amap.api.services.geocoder.GeocodeQuery;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
-import com.zbd.jingjingmap.Database.DatabaseHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity   implements GeocodeSearch.OnGeocodeSearchListener{
+public class MainActivity extends AppCompatActivity   implements GeocodeSearch.OnGeocodeSearchListener, AMap.OnMarkerClickListener {
     AMap aMap = null;
 
     MapView mMapView = null;
+    List<GeocodeAddress> geoList = new ArrayList<>();
 
     LocationSource.OnLocationChangedListener mListener;
     AMapLocationClient mlocationClient;
@@ -44,9 +47,18 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
 
 
 
-    Button button;
+    Button bt_search;
     EditText edittext;
     Button settings;
+    Button bt_goto;
+    String city;
+    double startA;
+    double startB;
+    double endA;
+    double endB;
+
+
+
 
     int cameraState = 0;
 
@@ -63,11 +75,11 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
         aMap = mMapView.getMap();
 
 
-        button = (Button)findViewById(R.id.search_bt);
+        bt_search = (Button)findViewById(R.id.search_bt);
+        bt_goto = (Button) findViewById(R.id.go_to);
         edittext = (EditText) findViewById(R.id.search_edit);
         settings = (Button) findViewById(R.id.settings);
         aMap.showIndoorMap(true);
-//        initMarker();
         aMap.setTrafficEnabled(true);
         mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
         mUiSettings.setScaleControlsEnabled(true);
@@ -105,6 +117,10 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
                                 if (amapLocation != null
                                         && amapLocation.getErrorCode() == 0) {
                                     mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
+                                    startA = amapLocation.getLatitude();
+                                    startB = amapLocation.getLongitude();
+
+                                    city = amapLocation.getCity();
                                     if (cameraState==0){
                                         aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                                         cameraState = 1;
@@ -154,22 +170,29 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
 
         aMap.setMyLocationEnabled(true);// 可触发定位并显示当前位置
 
-        button.setOnClickListener(new View.OnClickListener() {
+        bt_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String addr = edittext.getText().toString();
                 GeocodeSearch search = new GeocodeSearch(MainActivity.this);
                 search.setOnGeocodeSearchListener(MainActivity.this);
-                GeocodeQuery quera = new GeocodeQuery(addr,"郑州");
+                GeocodeQuery quera = new GeocodeQuery(city+addr,city);
                 search.getFromLocationNameAsyn(quera);
 
 
             }
         });
 
+        bt_goto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BusPathListActivity.actionStart(MainActivity.this,startA,startB,endA,endB);
+            }
+        });
 
 
 
+        aMap.setOnMarkerClickListener(this);
 
 
 
@@ -221,16 +244,29 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
 
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+        geoList = geocodeResult.getGeocodeAddressList();
+        for (int t = 0;t<geoList.size();t++){
+            GeocodeAddress geo = geocodeResult.getGeocodeAddressList().get(t);
+            LatLonPoint pos = geo.getLatLonPoint();
+            LatLng targetPos = new LatLng(pos.getLatitude(),pos.getLongitude());
+            CameraUpdate cu = CameraUpdateFactory.changeLatLng(targetPos);
+            aMap.moveCamera(cu);
 
-        GeocodeAddress geo = geocodeResult.getGeocodeAddressList().get(0);
-        LatLonPoint pos = geo.getLatLonPoint();
-        LatLng targetPos = new LatLng(pos.getLatitude(),pos.getLongitude());
-        CameraUpdate cu = CameraUpdateFactory.changeLatLng(targetPos);
-        aMap.moveCamera(cu);
-        double a = pos.getLatitude();
-        double b = pos.getLongitude();
-        initMarker(a,b);
+            double a = pos.getLatitude();
+            double b = pos.getLongitude();
 
+            endA = a;
+            endB = b;
+            initMarker(a,b);
 
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        bt_goto.setVisibility(View.VISIBLE);
+
+        return false;
     }
 }
