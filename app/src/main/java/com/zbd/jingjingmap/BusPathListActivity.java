@@ -68,7 +68,8 @@ public class BusPathListActivity extends AppCompatActivity implements RouteSearc
     @Override
     public void onBusRouteSearched(BusRouteResult busRouteResult, int i) {
         List<BusPath> paths = busRouteResult.getPaths();
-        mAdapter = new BusPathListAdapter(paths,BusPathListActivity.this);
+
+        mAdapter = new BusPathListAdapter(paths,BusPathListActivity.this,busRouteResult);
         busPathList.setAdapter(mAdapter);
     }
 
