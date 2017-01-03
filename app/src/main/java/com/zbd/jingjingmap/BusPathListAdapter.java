@@ -66,6 +66,7 @@ public class BusPathListAdapter extends BaseAdapter {
             mViewHolder.distance = (TextView) convertView.findViewById(R.id.distance);
 
             convertView.setTag(mViewHolder);
+
         }
         else {
             mViewHolder = (MViewHolder)convertView.getTag();

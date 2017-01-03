@@ -38,7 +38,7 @@ public class BusPathListActivity extends AppCompatActivity implements RouteSearc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buspathmanager);
+        setContentView(R.layout.activity_buspathlist);
         initFromAndTo();
 
         search = new RouteSearch(this);
