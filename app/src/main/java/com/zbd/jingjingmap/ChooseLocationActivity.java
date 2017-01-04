@@ -2,10 +2,12 @@ package com.zbd.jingjingmap;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,6 +17,8 @@ import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.model.BitmapDescriptor;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
@@ -24,6 +28,7 @@ import com.amap.api.services.geocoder.GeocodeQuery;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.j256.ormlite.stmt.query.In;
 import com.zbd.jingjingmap.Database.CustomLocation;
 import com.zbd.jingjingmap.Database.DatabaseHelper;
 
@@ -31,14 +36,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class ChooseLocationActivity extends AppCompatActivity implements GeocodeSearch.OnGeocodeSearchListener{
 
-    public static void actionStart(Context context,String locationName,String locationDetail){
+    public static void actionStart(Context context,String locationName,String locationDetail,String city){
         Intent intent = new Intent(context,ChooseLocationActivity.class);
         intent.putExtra("locationName",locationName);
         intent.putExtra("locationDetail",locationDetail);
+        intent.putExtra("city",city);
         context.startActivity(intent);
     }
 
@@ -52,6 +59,8 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
 
     String mName;
     String mDetail;
+
+    String city;
 
     List<Map<Double,Double>> resultList = new ArrayList<>();
     List<GeocodeAddress> geoList = new ArrayList<>();
@@ -86,6 +95,7 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
 
         name = getIntent().getStringExtra("locationName");
         detail = getIntent().getStringExtra("locationDetail");
+        city = getIntent().getStringExtra("city");
         nameEdit.setText(name);
         detailEdit.setText(detail);
 
@@ -97,10 +107,15 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
         mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
         mUiSettings.setScaleControlsEnabled(true);
 
-        GeocodeSearch search = new GeocodeSearch(ChooseLocationActivity.this);
-        search.setOnGeocodeSearchListener(ChooseLocationActivity.this);
-        GeocodeQuery quera = new GeocodeQuery(detail,"郑州");
-        search.getFromLocationNameAsyn(quera);
+        if(!name.equals("") && !detail.equals("")){
+            GeocodeSearch search = new GeocodeSearch(ChooseLocationActivity.this);
+            search.setOnGeocodeSearchListener(ChooseLocationActivity.this);
+            GeocodeQuery quera = new GeocodeQuery(city+detail,city);
+            search.getFromLocationNameAsyn(quera);
+            aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+
+        }
+
 
 
 
@@ -110,10 +125,13 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
                 String addr = detailEdit.getText().toString();
                 GeocodeSearch search = new GeocodeSearch(ChooseLocationActivity.this);
                 search.setOnGeocodeSearchListener(ChooseLocationActivity.this);
-                GeocodeQuery quera = new GeocodeQuery(addr,"郑州");
+                GeocodeQuery quera = new GeocodeQuery(city+addr,city);
                 search.getFromLocationNameAsyn(quera);
                 mName = nameEdit.getText().toString();
                 mDetail = detailEdit.getText().toString();
+//
+//                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 
             }
         });
@@ -123,11 +141,17 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
             public boolean onMarkerClick(Marker marker) {
                 markerLatitude = marker.getPosition().latitude;
                 markerLongitude = marker.getPosition().longitude;
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.located);
+
+                marker.setIcon(icon);
 
 
 
                 aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                saveLocation.setVisibility(View.VISIBLE);
                 saveLocation.setEnabled(true);
+//                saveLocation.setBackgroundResource(R.drawable.shape1);
+
                 return true;
             }
         });
@@ -156,7 +180,6 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
                     e.printStackTrace();
                 }
 
-                Toast.makeText(context,String.valueOf(markerLatitude)+String.valueOf(markerLongitude),Toast.LENGTH_SHORT).show();
                 helper.close();
                 closeActivity();
             }
@@ -210,9 +233,11 @@ public class ChooseLocationActivity extends AppCompatActivity implements Geocode
             LatLng targetPos = new LatLng(pos.getLatitude(),pos.getLongitude());
             CameraUpdate cu = CameraUpdateFactory.changeLatLng(targetPos);
             aMap.moveCamera(cu);
+            aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
             double a = pos.getLatitude();
             double b = pos.getLongitude();
             initMarker(a,b);
+            Toast.makeText(context,"请点击坐标确认位置",Toast.LENGTH_SHORT).show();
 
         }
 

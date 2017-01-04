@@ -1,13 +1,16 @@
 package com.zbd.jingjingmap;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 import com.amap.api.location.AMapLocation;
@@ -20,6 +23,8 @@ import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.model.BitmapDescriptor;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
@@ -57,12 +62,7 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
     double endA;
     double endB;
 
-
-
-
     int cameraState = 0;
-
-
 
 
     @Override
@@ -87,7 +87,10 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+                Intent intent = new Intent(MainActivity.this,LocationListActivity.class);
+                intent.putExtra("city",city);
+                intent.putExtra("startA",startA);
+                intent.putExtra("startB",startB);
                 startActivity(intent);
             }
         });
@@ -173,11 +176,17 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
         bt_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                settings.setVisibility(View.INVISIBLE);
+
+
                 String addr = edittext.getText().toString();
                 GeocodeSearch search = new GeocodeSearch(MainActivity.this);
                 search.setOnGeocodeSearchListener(MainActivity.this);
                 GeocodeQuery quera = new GeocodeQuery(city+addr,city);
                 search.getFromLocationNameAsyn(quera);
+
+//                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 
 
             }
@@ -201,9 +210,11 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
 
 
 
+
+
     public void initMarker(double a, double b){
         LatLng latLng = new LatLng(a,b);
-        final Marker marker = aMap.addMarker(new MarkerOptions().position(latLng).title("Home").snippet("DefaultMarker"));
+        final Marker marker = aMap.addMarker(new MarkerOptions().position(latLng));
     }
 
     @Override
@@ -246,6 +257,7 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
         geoList = geocodeResult.getGeocodeAddressList();
         for (int t = 0;t<geoList.size();t++){
+
             GeocodeAddress geo = geocodeResult.getGeocodeAddressList().get(t);
             LatLonPoint pos = geo.getLatLonPoint();
             LatLng targetPos = new LatLng(pos.getLatitude(),pos.getLongitude());
@@ -258,12 +270,14 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
             endA = a;
             endB = b;
             initMarker(a,b);
-
+            Toast.makeText(MainActivity.this,"请点击坐标确认位置",Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.located);
+        marker.setIcon(icon);
 
         bt_goto.setVisibility(View.VISIBLE);
 

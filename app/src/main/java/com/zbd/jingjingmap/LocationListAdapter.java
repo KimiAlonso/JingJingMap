@@ -20,6 +20,7 @@ public class LocationListAdapter extends BaseAdapter {
 
 
 
+
     public LocationListAdapter(List list, Context context){
         mList = list;
         mContext = context;

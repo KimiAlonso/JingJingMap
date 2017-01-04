@@ -17,7 +17,6 @@ public class CustomLocation {
     @DatabaseField(columnName = "state")
     private int state;
     @DatabaseField(columnName = "latitude")
-
     private double latitude;
     @DatabaseField(columnName = "longitude")
 
