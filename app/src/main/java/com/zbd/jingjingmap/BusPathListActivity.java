@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusPath;
@@ -26,12 +27,13 @@ public class BusPathListActivity extends AppCompatActivity implements RouteSearc
     ListView busPathList;
     BusPathListAdapter mAdapter;
 
-    public static void actionStart(Context context, double startA, double startB,double endA,double endB){
+    public static void actionStart(Context context, double startA, double startB,double endA,double endB,String city){
         Intent intent = new Intent(context,BusPathListActivity.class);
         intent.putExtra("startA",startA);
         intent.putExtra("startB",startB);
         intent.putExtra("endA",endA);
         intent.putExtra("endB",endB);
+        intent.putExtra("city",city);
         context.startActivity(intent);
     }
 
@@ -41,15 +43,17 @@ public class BusPathListActivity extends AppCompatActivity implements RouteSearc
         setContentView(R.layout.activity_buspathlist);
         initFromAndTo();
 
+
+
         search = new RouteSearch(this);
         search.setRouteSearchListener(this);
 
         busPathList = (ListView) findViewById(R.id.buspathlist);
+        String city = getIntent().getStringExtra("city");
 
+//        Toast.makeText(BusPathListActivity.this,city,Toast.LENGTH_SHORT).show();
 
-
-
-        RouteSearch.BusRouteQuery query = new RouteSearch.BusRouteQuery(fromAndTo, RouteSearch.BusLeaseWalk, "南阳",1);
+        RouteSearch.BusRouteQuery query = new RouteSearch.BusRouteQuery(fromAndTo, RouteSearch.BusLeaseWalk, city,1);
         search.calculateBusRouteAsyn(query);
 
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -124,6 +125,7 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
                                     startB = amapLocation.getLongitude();
 
                                     city = amapLocation.getCity();
+
                                     if (cameraState==0){
                                         aMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                                         cameraState = 1;
@@ -195,7 +197,7 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
         bt_goto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BusPathListActivity.actionStart(MainActivity.this,startA,startB,endA,endB);
+                BusPathListActivity.actionStart(MainActivity.this,startA,startB,endA,endB,city);
             }
         });
 
@@ -282,5 +284,29 @@ public class MainActivity extends AppCompatActivity   implements GeocodeSearch.O
         bt_goto.setVisibility(View.VISIBLE);
 
         return false;
+    }
+
+    private long mExitTime;
+    //对返回键进行监听
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+
+            exit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void exit() {
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            Toast.makeText(MainActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+        } else {
+
+            finish();
+            System.exit(0);
+        }
     }
 }

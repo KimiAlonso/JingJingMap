@@ -74,7 +74,7 @@ public class LocationListActivity extends AppCompatActivity {
 
                 double endA = tList.get(position).getLatitude();
                 double endB = tList.get(position).getLongitude();
-                BusPathListActivity.actionStart(context,startA,startB,endA,endB);
+                BusPathListActivity.actionStart(context,startA,startB,endA,endB,city);
 
             }
         });

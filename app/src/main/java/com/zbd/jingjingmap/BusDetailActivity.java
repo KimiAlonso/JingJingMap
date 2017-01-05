@@ -133,11 +133,6 @@ public class BusDetailActivity extends AppCompatActivity implements AMap.OnMapLo
                                         && amapLocation.getErrorCode() == 0) {
                                     mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
 
-
-
-
-
-
                                 } else {
                                     String errText = "定位失败," + amapLocation.getErrorCode()+ ": " + amapLocation.getErrorInfo();
                                     Log.e("AmapErr",errText);
